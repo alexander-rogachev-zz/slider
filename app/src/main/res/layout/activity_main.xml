@@ -19,13 +19,15 @@
         android:layout_height="wrap_content"
         android:text="Run"
         android:id="@+id/btn_run"
-        android:layout_marginTop="44dp"
-        android:layout_below="@+id/cb_autorun_afterrestart"/>
+        android:layout_below="@+id/cb_autorun"
+        android:layout_alignRight="@+id/cb_autorun_afterrestart"
+        android:layout_alignEnd="@+id/cb_autorun_afterrestart" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_start_date"
+        android:layout_marginTop="94dp"
         android:layout_below="@+id/tv_title"
         android:layout_toRightOf="@+id/tv_title" />
 
@@ -34,35 +36,34 @@
         android:layout_height="wrap_content"
         android:id="@+id/btn_start_time"
         android:layout_alignTop="@+id/btn_start_date"
-        android:layout_toRightOf="@+id/btn_start_date"
-        android:layout_marginLeft="64dp" />
+        android:layout_toRightOf="@+id/btn_choose_folder" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_end_date"
-        android:layout_alignBaseline="@+id/btn_end_time"
-        android:layout_alignBottom="@+id/btn_end_time"
+        android:layout_below="@+id/tv_end"
         android:layout_alignLeft="@+id/btn_start_date"
         android:layout_alignStart="@+id/btn_start_date" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Автоматический запуск после перезагрузки"
+        android:text="Autorun after app restart"
         android:id="@+id/cb_autorun_afterrestart"
         android:checked="false"
-        android:layout_below="@+id/cb_autorun"
+        android:layout_below="@+id/et_delay"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="28dp" />
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Автоматический запуск во время зарядки"
+        android:text="Autorun while app charging"
         android:id="@+id/cb_autorun"
         android:checked="false"
-        android:layout_below="@+id/btn_end_date"
+        android:layout_below="@+id/cb_autorun_afterrestart"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -70,8 +71,66 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_end_time"
-        android:layout_below="@+id/btn_start_time"
-        android:layout_alignLeft="@+id/btn_start_time"
-        android:layout_alignStart="@+id/btn_start_time" />
+        android:layout_alignTop="@+id/btn_end_date"
+        android:layout_toRightOf="@+id/btn_choose_folder" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose folder"
+        android:id="@+id/btn_choose_folder"
+        android:layout_below="@+id/tv_title"
+        android:layout_toRightOf="@+id/tv_title" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="..."
+        android:id="@+id/tvFolderName"
+        android:layout_below="@+id/btn_choose_folder"
+        android:layout_alignLeft="@+id/btn_choose_folder" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Start time:"
+        android:id="@+id/tv_start"
+        android:layout_above="@+id/btn_start_time"
+        android:layout_alignRight="@+id/btn_start_date"
+        android:layout_alignEnd="@+id/btn_start_date" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="End time:"
+        android:id="@+id/tv_end"
+        android:layout_below="@+id/btn_start_date"
+        android:layout_alignLeft="@+id/tv_start"
+        android:layout_alignStart="@+id/tv_start" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/et_delay"
+        android:text="1"
+        android:layout_below="@+id/btn_end_date"
+        android:layout_alignLeft="@+id/btn_end_date"
+        android:layout_alignStart="@+id/btn_end_date"
+        android:layout_marginTop="26dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Delay:"
+        android:id="@+id/tv_delay"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/tv_end"
+        android:layout_alignStart="@+id/tv_end" />
 
 </RelativeLayout>

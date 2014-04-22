@@ -6,6 +6,8 @@ import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,12 +16,16 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import edu.android.openfiledialog.OpenFileDialog;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -33,19 +39,24 @@ public class MainActivity extends ActionBarActivity {
     public static final String START_TIME_PARAM_NAME = "startTime";
     public static final String END_DATE_PARAM_NAME = "endDate";
     public static final String END_TIME_PARAM_NAME = "endTime";
+    public static final String FOLDER_PARAM_NAME = "folderName";
     private static final String CHECK_AUTO_RUN_PARAM_NAME = "autoRun";
     private static final String CHECK_AUTO_RUN_AFTER_RESTART_PARAM_NAME = "autoRunAfterRestart";
+    private static final String DELAY_PARAM_NAME = "delay";
 
     private Button btnStartDate;
     private Button btnStartTime;
     private Button btnEndDate;
     private Button btnEndTime;
+    private Button btnChooseFolder;
     private CheckBox cbAutoRun;
     private CheckBox cbAutoRunAfterRestart;
     private String date;
     private String time;
     private String hours;
     private String minutes;
+    private TextView tvFolderName;
+    private EditText etDelay;
 
     private SharedPreferences sharedPref;
 
@@ -54,8 +65,30 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         sharedPref = getSharedPreferences("slider.settings", MODE_PRIVATE);
         setContentView(R.layout.activity_main);
-        Date now = new Date();
 
+        tvFolderName = (TextView) findViewById(R.id.tvFolderName);
+        tvFolderName.setText(sharedPref.getString(FOLDER_PARAM_NAME, ""));
+        btnChooseFolder = (Button) findViewById(R.id.btn_choose_folder);
+        btnChooseFolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenFileDialog dialog = new OpenFileDialog(v.getContext())
+                        .setFilter(".*\\.*")
+                        .setOpenDialogListener(new OpenFileDialog.OpenDialogListener() {
+                            @Override
+                            public void OnSelectedFile(String fileName) {
+                                tvFolderName.setText(fileName);
+                                SharedPreferences.Editor prefEditor = sharedPref.edit();
+                                prefEditor.putString(FOLDER_PARAM_NAME, fileName);
+                                prefEditor.commit();
+                            }
+                        });
+                dialog.show();
+
+            }
+        });
+
+        Date now = new Date();
         date = sharedPref.getString(START_DATE_PARAM_NAME, DateFormat.format(DATE_FORMAT, now).toString());
         btnStartDate = (Button) findViewById(R.id.btn_start_date);
         btnStartDate.setText(date);
@@ -128,8 +161,31 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-    }
+        final int delay = sharedPref.getInt(DELAY_PARAM_NAME, 1);
+        etDelay = (EditText) findViewById(R.id.et_delay);
+        etDelay.setText(String.valueOf(delay));
+        etDelay.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int delayNew = etDelay.getText() == null || etDelay.getText().toString().isEmpty() ? 0 : Integer.valueOf(etDelay.getText().toString());
+                if (delayNew > 0) {
+                    SharedPreferences.Editor prefEditor = sharedPref.edit();
+                    prefEditor.putInt(DELAY_PARAM_NAME, delayNew);
+                    prefEditor.commit();
+                }
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,10 +196,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
 
