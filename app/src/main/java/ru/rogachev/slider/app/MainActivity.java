@@ -3,6 +3,7 @@ package ru.rogachev.slider.app;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -26,29 +27,17 @@ import java.util.Calendar;
 import java.util.Date;
 
 import edu.android.openfiledialog.OpenFileDialog;
+import ru.rogachev.slider.utils.Constants;
 
 
 public class MainActivity extends ActionBarActivity {
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
-    public static final String TIME_FORMAT = "kk:mm";
-    private static final int DIALOG_START_DATE = 0;
-    private static final int DIALOG_START_TIME = 1;
-    private static final int DIALOG_END_DATE = 2;
-    private static final int DIALOG_END_TIME = 3;
-    public static final String START_DATE_PARAM_NAME = "startDate";
-    public static final String START_TIME_PARAM_NAME = "startTime";
-    public static final String END_DATE_PARAM_NAME = "endDate";
-    public static final String END_TIME_PARAM_NAME = "endTime";
-    public static final String FOLDER_PARAM_NAME = "folderName";
-    private static final String CHECK_AUTO_RUN_PARAM_NAME = "autoRun";
-    private static final String CHECK_AUTO_RUN_AFTER_RESTART_PARAM_NAME = "autoRunAfterRestart";
-    private static final String DELAY_PARAM_NAME = "delay";
 
     private Button btnStartDate;
     private Button btnStartTime;
     private Button btnEndDate;
     private Button btnEndTime;
     private Button btnChooseFolder;
+    private Button btnRun;
     private CheckBox cbAutoRun;
     private CheckBox cbAutoRunAfterRestart;
     private String date;
@@ -57,6 +46,11 @@ public class MainActivity extends ActionBarActivity {
     private String minutes;
     private TextView tvFolderName;
     private EditText etDelay;
+
+    private static final int DIALOG_START_DATE = 0;
+    private static final int DIALOG_START_TIME = 1;
+    private static final int DIALOG_END_DATE = 2;
+    private static final int DIALOG_END_TIME = 3;
 
     private SharedPreferences sharedPref;
 
@@ -67,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         tvFolderName = (TextView) findViewById(R.id.tvFolderName);
-        tvFolderName.setText(sharedPref.getString(FOLDER_PARAM_NAME, ""));
+        tvFolderName.setText(sharedPref.getString(Constants.FOLDER_PARAM_NAME, ""));
         btnChooseFolder = (Button) findViewById(R.id.btn_choose_folder);
         btnChooseFolder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +73,7 @@ public class MainActivity extends ActionBarActivity {
                             public void OnSelectedFile(String fileName) {
                                 tvFolderName.setText(fileName);
                                 SharedPreferences.Editor prefEditor = sharedPref.edit();
-                                prefEditor.putString(FOLDER_PARAM_NAME, fileName);
+                                prefEditor.putString(Constants.FOLDER_PARAM_NAME, fileName);
                                 prefEditor.commit();
                             }
                         });
@@ -89,7 +83,7 @@ public class MainActivity extends ActionBarActivity {
         });
 
         Date now = new Date();
-        date = sharedPref.getString(START_DATE_PARAM_NAME, DateFormat.format(DATE_FORMAT, now).toString());
+        date = sharedPref.getString(Constants.START_DATE_PARAM_NAME, DateFormat.format(Constants.DATE_FORMAT, now).toString());
         btnStartDate = (Button) findViewById(R.id.btn_start_date);
         btnStartDate.setText(date);
         btnStartDate.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +95,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        time = sharedPref.getString(START_TIME_PARAM_NAME, DateFormat.format(TIME_FORMAT, now).toString());
+        time = sharedPref.getString(Constants.START_TIME_PARAM_NAME, DateFormat.format(Constants.TIME_FORMAT, now).toString());
         btnStartTime = (Button) findViewById(R.id.btn_start_time);
         btnStartTime.setText(time);
         btnStartTime.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +107,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        date = sharedPref.getString(END_DATE_PARAM_NAME, DateFormat.format(DATE_FORMAT, now).toString());
+        date = sharedPref.getString(Constants.END_DATE_PARAM_NAME, DateFormat.format(Constants.DATE_FORMAT, now).toString());
         btnEndDate = (Button) findViewById(R.id.btn_end_date);
         btnEndDate.setText(date);
         btnEndDate.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        time = sharedPref.getString(END_TIME_PARAM_NAME, DateFormat.format(TIME_FORMAT, now).toString());
+        time = sharedPref.getString(Constants.END_TIME_PARAM_NAME, DateFormat.format(Constants.TIME_FORMAT, now).toString());
         btnEndTime = (Button) findViewById(R.id.btn_end_time);
         btnEndTime.setText(time);
         btnEndTime.setOnClickListener(new View.OnClickListener() {
@@ -137,31 +131,31 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        boolean isAutoRun = sharedPref.getBoolean(CHECK_AUTO_RUN_PARAM_NAME, false);
+        boolean isAutoRun = sharedPref.getBoolean(Constants.CHECK_AUTO_RUN_PARAM_NAME, false);
         cbAutoRun = (CheckBox) findViewById(R.id.cb_autorun);
         cbAutoRun.setChecked(isAutoRun);
         cbAutoRun.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
                 SharedPreferences.Editor prefEditor = sharedPref.edit();
-                prefEditor.putBoolean(CHECK_AUTO_RUN_PARAM_NAME, isChecked);
+                prefEditor.putBoolean(Constants.CHECK_AUTO_RUN_PARAM_NAME, isChecked);
                 prefEditor.commit();
             }
         });
 
-        boolean isAutoRunAfterRestart = sharedPref.getBoolean(CHECK_AUTO_RUN_AFTER_RESTART_PARAM_NAME, false);
+        boolean isAutoRunAfterRestart = sharedPref.getBoolean(Constants.CHECK_AUTO_RUN_AFTER_RESTART_PARAM_NAME, false);
         cbAutoRunAfterRestart = (CheckBox) findViewById(R.id.cb_autorun_afterrestart);
         cbAutoRunAfterRestart.setChecked(isAutoRunAfterRestart);
         cbAutoRunAfterRestart.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
                 SharedPreferences.Editor prefEditor = sharedPref.edit();
-                prefEditor.putBoolean(CHECK_AUTO_RUN_AFTER_RESTART_PARAM_NAME, isChecked);
+                prefEditor.putBoolean(Constants.CHECK_AUTO_RUN_AFTER_RESTART_PARAM_NAME, isChecked);
                 prefEditor.commit();
             }
         });
 
-        final int delay = sharedPref.getInt(DELAY_PARAM_NAME, 1);
+        final int delay = sharedPref.getInt(Constants.DELAY_PARAM_NAME, 1);
         etDelay = (EditText) findViewById(R.id.et_delay);
         etDelay.setText(String.valueOf(delay));
         etDelay.addTextChangedListener(new TextWatcher() {
@@ -180,9 +174,18 @@ public class MainActivity extends ActionBarActivity {
                 int delayNew = etDelay.getText() == null || etDelay.getText().toString().isEmpty() ? 0 : Integer.valueOf(etDelay.getText().toString());
                 if (delayNew > 0) {
                     SharedPreferences.Editor prefEditor = sharedPref.edit();
-                    prefEditor.putInt(DELAY_PARAM_NAME, delayNew);
+                    prefEditor.putInt(Constants.DELAY_PARAM_NAME, delayNew);
                     prefEditor.commit();
                 }
+            }
+        });
+
+        btnRun = (Button) findViewById(R.id.btn_run);
+        btnRun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SlideShowActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -196,7 +199,12 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        if (id == R.id.action_settings || super.onOptionsItemSelected(item)) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return false;
     }
 
 
@@ -212,7 +220,7 @@ public class MainActivity extends ActionBarActivity {
                         date = String.format("%04d", year) + "-" + String.format("%02d", monthOfYear + 1) + "-" + String.format("%02d", dayOfMonth);
                         btnStartDate.setText(date);
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
-                        prefEditor.putString(START_DATE_PARAM_NAME, date);
+                        prefEditor.putString(Constants.START_DATE_PARAM_NAME, date);
                         prefEditor.commit();
                     }
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -227,7 +235,7 @@ public class MainActivity extends ActionBarActivity {
                         minutes = String.format("%02d", minute);
                         btnStartTime.setText(hours + ":" + minutes);
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
-                        prefEditor.putString(START_TIME_PARAM_NAME, hours + ":" + minutes);
+                        prefEditor.putString(Constants.START_TIME_PARAM_NAME, hours + ":" + minutes);
                         prefEditor.commit();
                     }
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
@@ -242,7 +250,7 @@ public class MainActivity extends ActionBarActivity {
                         date = String.format("%04d", year) + "-" + String.format("%02d", monthOfYear + 1) + "-" + String.format("%02d", dayOfMonth);
                         btnEndDate.setText(date);
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
-                        prefEditor.putString(END_DATE_PARAM_NAME, date);
+                        prefEditor.putString(Constants.END_DATE_PARAM_NAME, date);
                         prefEditor.commit();
                     }
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -257,7 +265,7 @@ public class MainActivity extends ActionBarActivity {
                         minutes = String.format("%02d", minute);
                         btnEndTime.setText(hours + ":" + minutes);
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
-                        prefEditor.putString(END_TIME_PARAM_NAME, hours + ":" + minutes);
+                        prefEditor.putString(Constants.END_TIME_PARAM_NAME, hours + ":" + minutes);
                         prefEditor.commit();
 
                     }
@@ -282,5 +290,4 @@ public class MainActivity extends ActionBarActivity {
         super.onStop();
         EasyTracker.getInstance().activityStop(MainActivity.this);
     }
-
 }

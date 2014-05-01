@@ -4,5 +4,34 @@
     <string name="app_name">slider</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_slide_show">SlideShowActivity</string>
+    <string name="cb_autorun_afterrestart">cb_autorun_afterrestart</string>
+    <string name="cb_autorun">cb_autorun</string>
+    <string name="title_autorun_while_charging">Autorun while app charging</string>
+    <string name="title_autorun_after_restart">Autorun after app restart</string>
+    <string name="title_delay">Delay</string>
+    <string name="dialog_title_delay">Delay</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_title_choose_folder">Choose folder</string>
+    <string name="button_title_run">Run</string>
+    <string name="title_start_time">Start time</string>
+    <string name="title_end_time">End time</string>
+    <string name="summary_start_time">Set start date time</string>
+    <string name="summary_slide_delay">Set slide delay</string>
+    <string name="summary_autorun_after_restart">Is autorun after app restart</string>
+    <string name="summary_autorun_while_charging">Is autorun while charging</string>
+    <string name="title_application_settings">Application settings</string>
+    <string name="title_start_date">Start date</string>
+    <string name="summary_start_date">Start date</string>
+    <string name="title_end_date">End date</string>
+    <string name="summary_end_date">Set end date</string>
+    <string name="summary_folder_name">Set folder name</string>
+    <string name="title_folder_name">Folder name</string>
+    <string name="summary_end_time">Set end time</string>
+    <string name="time_set">Set time</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
