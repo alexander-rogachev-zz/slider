@@ -25,7 +25,7 @@
     <string name="summary_autorun_while_charging">Is autorun while charging</string>
     <string name="title_application_settings">Application settings</string>
     <string name="title_start_date">Start date</string>
-    <string name="summary_start_date">Start date</string>
+    <string name="summary_start_date">Set start date</string>
     <string name="title_end_date">End date</string>
     <string name="summary_end_date">Set end date</string>
     <string name="summary_folder_name">Set folder name</string>

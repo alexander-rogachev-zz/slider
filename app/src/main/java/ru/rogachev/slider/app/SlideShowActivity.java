@@ -31,9 +31,7 @@ public class SlideShowActivity extends Activity {
                 @Override
                 public boolean accept(File file, String fileName) {
                     File tempFile = new File(String.format("%s/%s", file.getPath(), fileName));
-                    if (tempFile.isFile())
-                        return tempFile.getName().matches(".*\\.jpg");
-                    return true;
+                    return !tempFile.isFile() || tempFile.getName().matches(".*\\.jpg");
                 }
             });
             Uri uri = Uri.fromFile(images[0]);
