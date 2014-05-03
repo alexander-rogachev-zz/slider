@@ -1,5 +1,7 @@
 package ru.rogachev.slider.app;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,7 +12,11 @@ import android.widget.Button;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
+import ru.rogachev.slider.services.SliderService;
+
 public class MainActivity extends ActionBarActivity {
+
+    private AlarmManager am;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +31,12 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
+
+        am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        PendingIntent myService = PendingIntent.getService(MainActivity.this, 0, new Intent(MainActivity.this, SliderService.class), 0);
+        long triggerAtTime = 1000;
+        am.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtTime, 10000, myService);
     }
 
     @Override
