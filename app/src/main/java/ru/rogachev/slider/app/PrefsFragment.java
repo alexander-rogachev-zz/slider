@@ -209,13 +209,17 @@ public class PrefsFragment extends PreferenceFragment {
 
         final Preference folderNamePref = findPreference(Constants.FOLDER_PARAM_NAME);
         if (folderNamePref != null) {
-            String fName = sharedPref.getString(Constants.FOLDER_PARAM_NAME, null);
-            if (fName != null) {
-                folderNamePref.setSummary(fName);
+            final String folderName = sharedPref.getString(Constants.FOLDER_PARAM_NAME, null);
+            if (folderName != null) {
+                folderNamePref.setSummary(folderName);
             }
             folderNamePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    OpenFileDialog dialog = new OpenFileDialog(getActivity())
+                    final String folderName = sharedPref.getString(Constants.FOLDER_PARAM_NAME, null);
+                    if (folderName != null) {
+                        folderNamePref.setSummary(folderName);
+                    }
+                    OpenFileDialog dialog = new OpenFileDialog(getActivity(), folderName)
                             .setFilter(".*\\.*")
                             .setOpenDialogListener(new OpenFileDialog.OpenDialogListener() {
                                 @Override
@@ -235,7 +239,7 @@ public class PrefsFragment extends PreferenceFragment {
 
     private String getDelayString(int hours, int minutes, int seconds) {
         String delayString = "" + (hours > 0 ? hours + " h" : "");
-        delayString = delayString + (delayString.length() > 0 ? " " : "") + (minutes > 0 ? minutes + " mim" : "");
+        delayString = delayString + (delayString.length() > 0 ? " " : "") + (minutes > 0 ? minutes + " min" : "");
         return delayString + (delayString.length() > 0 ? " " : "") + (seconds > 0 ? seconds + " sec" : "");
     }
 }

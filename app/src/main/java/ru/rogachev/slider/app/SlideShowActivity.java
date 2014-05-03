@@ -56,9 +56,9 @@ public class SlideShowActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slide_show);
-        SharedPreferences sharedPref = getSharedPreferences("ru.rogachev.slider.app_preferences", MODE_PRIVATE);
-        String folderName = sharedPref.getString(Constants.FOLDER_PARAM_NAME, "");
-        String delayPref = sharedPref.getString(Constants.DELAY_PARAM_NAME, "");
+        SharedPreferences sharedPref = getSharedPreferences(Constants.APP_PREFERENCES_NAME, MODE_PRIVATE);
+        String folderName = sharedPref.getString(Constants.FOLDER_PARAM_NAME, null);
+        String delayPref = sharedPref.getString(Constants.DELAY_PARAM_NAME, null);
         String[] timeItems = delayPref.split(":");
         int hours = Integer.parseInt(timeItems[0]);
         int minutes = Integer.parseInt(timeItems[1]);
@@ -66,7 +66,7 @@ public class SlideShowActivity extends Activity {
         delay = (hours * 3600 + minutes * 60 + seconds) * 1000;
 
         File folder = new File(folderName);
-        registerReceiver(abcd, new IntentFilter("xyz"));
+        registerReceiver(closeSliderReceiver, new IntentFilter(Constants.CLOSE_SLIDER_INTENT_NAME));
         ivSlide = (ImageView) findViewById(R.id.imageView);
         if (folder.isDirectory()) {
             images = folder.listFiles(new FilenameFilter() {
@@ -80,7 +80,7 @@ public class SlideShowActivity extends Activity {
         }
     }
 
-    private final BroadcastReceiver abcd = new BroadcastReceiver() {
+    private final BroadcastReceiver closeSliderReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             finish();
@@ -90,7 +90,7 @@ public class SlideShowActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(abcd);
+        unregisterReceiver(closeSliderReceiver);
     }
 
 }

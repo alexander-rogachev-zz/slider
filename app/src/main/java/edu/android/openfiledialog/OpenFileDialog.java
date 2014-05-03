@@ -17,11 +17,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.*;
 
-/**
- * User: Scogun
- * Date: 27.11.13
- * Time: 10:47
- */
 public class OpenFileDialog extends AlertDialog.Builder {
 
     private String currentPath = Environment.getExternalStorageDirectory().getPath();
@@ -29,7 +24,6 @@ public class OpenFileDialog extends AlertDialog.Builder {
     private TextView title;
     private ListView listView;
     private FilenameFilter filenameFilter;
-//    private int selectedIndex = -1;
     private OpenDialogListener listener;
     private Drawable folderIcon;
     private Drawable fileIcon;
@@ -55,10 +49,6 @@ public class OpenFileDialog extends AlertDialog.Builder {
                     setDrawable(view, folderIcon);
                 } else {
                     setDrawable(view, fileIcon);
-//                    if (selectedIndex == position)
-//                        view.setBackgroundColor(getContext().getResources().getColor(android.R.color.holo_blue_dark));
-//                    else
-//                        view.setBackgroundColor(getContext().getResources().getColor(android.R.color.transparent));
                 }
             }
             return view;
@@ -76,8 +66,9 @@ public class OpenFileDialog extends AlertDialog.Builder {
         }
     }
 
-    public OpenFileDialog(Context context) {
+    public OpenFileDialog(Context context, String path) {
         super(context);
+        this.currentPath = path;
         title = createTitle(context);
         changeTitle();
         LinearLayout linearLayout = createMainLayout(context);
@@ -89,8 +80,8 @@ public class OpenFileDialog extends AlertDialog.Builder {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (/*selectedIndex > -1 && */listener != null) {
-                            listener.OnSelectedFile(currentPath/*listView.getItemAtPosition(selectedIndex).toString()*/);
+                        if (listener != null) {
+                            listener.OnSelectedFile(currentPath);
                         }
                     }
                 })
@@ -110,9 +101,7 @@ public class OpenFileDialog extends AlertDialog.Builder {
             @Override
             public boolean accept(File file, String fileName) {
                 File tempFile = new File(String.format("%s/%s", file.getPath(), fileName));
-                if (tempFile.isFile())
-                    return tempFile.getName().matches(filter);
-                return true;
+                return !tempFile.isFile() || tempFile.getName().matches(filter);
             }
         };
         return this;
@@ -136,6 +125,14 @@ public class OpenFileDialog extends AlertDialog.Builder {
     public OpenFileDialog setAccessDeniedMessage(String message) {
         this.accessDeniedMessage = message;
         return this;
+    }
+
+    public void setCurrentPath(String path){
+        this.currentPath = path;
+    }
+
+    public String getCurrentPath(){
+        return currentPath;
     }
 
     private static Display getDefaultDisplay(Context context) {
@@ -179,8 +176,7 @@ public class OpenFileDialog extends AlertDialog.Builder {
     }
 
     private TextView createTitle(Context context) {
-        TextView textView = createTextView(context, android.R.style.TextAppearance_DeviceDefault_DialogWindowTitle);
-        return textView;
+        return createTextView(context, android.R.style.TextAppearance_DeviceDefault_DialogWindowTitle);
     }
 
     private TextView createBackItem(Context context) {
@@ -268,10 +264,6 @@ public class OpenFileDialog extends AlertDialog.Builder {
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
                 final ArrayAdapter<File> adapter = (FileAdapter) adapterView.getAdapter();
                 File file = adapter.getItem(index);
-                /*if (index != selectedIndex)
-                    selectedIndex = index;
-                else
-                    selectedIndex = -1;*/
                 adapter.notifyDataSetChanged();
                 if (file.isDirectory()) {
                     currentPath = file.getPath();

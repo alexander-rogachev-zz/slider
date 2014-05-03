@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ru.rogachev.slider.app" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="ru.rogachev.slider.app" >
 
     <application
         android:allowBackup="true"
@@ -19,7 +18,7 @@
             android:label="@string/title_activity_slide_show"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" >
             <intent-filter>
-                <action android:name="xyz" />
+                <action android:name="closeSlider" />
             </intent-filter>
         </activity>
         <activity android:name="ru.rogachev.slider.app.SettingsActivity" android:label="@string/title_activity_settings"/>
@@ -28,6 +27,14 @@
                 <action android:name="ru.rogachev.slider.services.SliderService"/>
             </intent-filter>
         </service>
+<!--
+        <receiver android:name="ru.rogachev.slider.services.PowerReceiver" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+            </intent-filter>
+        </receiver>
+-->
     </application>
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"

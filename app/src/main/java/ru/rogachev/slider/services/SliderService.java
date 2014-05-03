@@ -4,7 +4,9 @@ import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.os.IBinder;
 
 import java.text.ParseException;
@@ -37,21 +39,30 @@ public class SliderService extends Service {
         super.onStartCommand(intent, flags, startId);
         Intent slideShowIntent = new Intent(this, SlideShowActivity.class);
         slideShowIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        SharedPreferences sharedPref = getSharedPreferences("ru.rogachev.slider.app_preferences", MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(Constants.APP_PREFERENCES_NAME, MODE_PRIVATE);
         String startDatePref = sharedPref.getString(Constants.START_DATE_PARAM_NAME, null);
         String startTimePref = sharedPref.getString(Constants.START_TIME_PARAM_NAME, null);
         Date startDateTime = getDateTime(startDatePref, startTimePref);
         String endDatePref = sharedPref.getString(Constants.END_DATE_PARAM_NAME, null);
         String endTimePref = sharedPref.getString(Constants.END_TIME_PARAM_NAME, null);
+
         Date endDateTime = getDateTime(endDatePref, endTimePref);
         Date currentDate = new Date();
+
         if (isNotServiceRunning()) {
-            if (currentDate.after(startDateTime) && currentDate.before(endDateTime)) {
-                startActivity(slideShowIntent);
+            boolean autoRunWhileChargingPref = sharedPref.getBoolean(Constants.CHECK_AUTO_RUN_PARAM_NAME, false);
+            IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            Intent batteryStatus = registerReceiver(null, filter);
+            int chargeState = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            boolean isCharging = chargeState == 2 || chargeState == 5;
+            if (!isCharging || autoRunWhileChargingPref) {
+                if (currentDate.after(startDateTime) && currentDate.before(endDateTime)) {
+                    startActivity(slideShowIntent);
+                }
             }
         } else {
             if (currentDate.after(endDateTime)) {
-                sendBroadcast(new Intent("xyz"));
+                sendBroadcast(new Intent(Constants.CLOSE_SLIDER_INTENT_NAME));
             }
         }
         return START_STICKY;
@@ -61,7 +72,7 @@ public class SliderService extends Service {
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> services = activityManager.getRunningTasks(Integer.MAX_VALUE);
         for (ActivityManager.RunningTaskInfo service : services) {
-            if (service.topActivity.getClassName().equals("ru.rogachev.slider.app.SlideShowActivity")) {
+            if (service.topActivity.getClassName().equals(SlideShowActivity.class.getName())) {
                 return false;
             }
         }
