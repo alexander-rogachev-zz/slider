@@ -1,6 +1,10 @@
 package ru.rogachev.slider.app;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -62,7 +66,7 @@ public class SlideShowActivity extends Activity {
         delay = (hours * 3600 + minutes * 60 + seconds) * 1000;
 
         File folder = new File(folderName);
-
+        registerReceiver(abcd, new IntentFilter("xyz"));
         ivSlide = (ImageView) findViewById(R.id.imageView);
         if (folder.isDirectory()) {
             images = folder.listFiles(new FilenameFilter() {
@@ -74,6 +78,19 @@ public class SlideShowActivity extends Activity {
             });
             updateUI();
         }
+    }
+
+    private final BroadcastReceiver abcd = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(abcd);
     }
 
 }
