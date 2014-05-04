@@ -22,12 +22,17 @@
             </intent-filter>
         </activity>
         <activity android:name="ru.rogachev.slider.app.SettingsActivity" android:label="@string/title_activity_settings"/>
-       <service android:name="ru.rogachev.slider.services.SliderService">
+        <service android:name="ru.rogachev.slider.services.SliderService">
             <intent-filter>
                 <action android:name="ru.rogachev.slider.services.SliderService"/>
             </intent-filter>
         </service>
-<!--
+        <receiver android:enabled="true" android:name="ru.rogachev.slider.services.OnBootReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <!--
         <receiver android:name="ru.rogachev.slider.services.PowerReceiver" android:enabled="true" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
@@ -40,5 +45,6 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="19" />
     <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
 </manifest>
