@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -64,7 +65,8 @@ public class SlideShowActivity extends Activity {
         int minutes = Integer.parseInt(timeItems[1]);
         int seconds = Integer.parseInt(timeItems[2]);
         delay = (hours * 3600 + minutes * 60 + seconds) * 1000;
-
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         File folder = new File(folderName);
         registerReceiver(closeSliderReceiver, new IntentFilter(Constants.CLOSE_SLIDER_INTENT_NAME));
         ivSlide = (ImageView) findViewById(R.id.imageView);

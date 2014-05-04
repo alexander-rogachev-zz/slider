@@ -50,11 +50,18 @@ public class PrefsFragment extends PreferenceFragment {
                 seconds = Integer.parseInt(timeItems[2]);
                 slideDelayPref.setSummary(getDelayString(hours, minutes, seconds));
             }
-            final int finalMinutes = minutes;
-            final int finalHours = hours;
-            final int finalSeconds = seconds;
             slideDelayPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
+                    int hours = 0;
+                    int minutes = 0;
+                    int seconds = 0;
+                    String delay = sharedPref.getString(Constants.DELAY_PARAM_NAME, null);
+                    if (delay != null) {
+                        String[] timeItems = delay.split(":");
+                        hours = Integer.parseInt(timeItems[0]);
+                        minutes = Integer.parseInt(timeItems[1]);
+                        seconds = Integer.parseInt(timeItems[2]);
+                    }
                     TimePickerDialogWithSeconds dialog = new TimePickerDialogWithSeconds(getActivity(), new TimePickerDialogWithSeconds.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(ru.rogachev.slider.dialogs.TimePicker view, int hourOfDay, int minute, int second) {
@@ -66,7 +73,7 @@ public class PrefsFragment extends PreferenceFragment {
                             prefEditor.putString(Constants.DELAY_PARAM_NAME, hoursValue + ":" + minutesValue + ":" + secondsValue);
                             prefEditor.commit();
                         }
-                    }, finalHours, finalMinutes, finalSeconds);
+                    }, hours, minutes, seconds);
                     dialog.show();
                     return true;
                 }

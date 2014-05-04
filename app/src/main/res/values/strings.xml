@@ -33,5 +33,6 @@
     <string name="summary_end_time">Set end time</string>
     <string name="time_set">Set time</string>
     <string name="cancel">Cancel</string>
+    <string name="time_picker_widget_title">Set delay</string>
 
 </resources>

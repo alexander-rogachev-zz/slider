@@ -4,17 +4,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 
-import java.util.Calendar;
-
 import ru.rogachev.slider.app.R;
 
-public class TimePickerDialogWithSeconds extends AlertDialog implements DialogInterface.OnClickListener,
-        TimePicker.OnTimeChangedListener {
+public class TimePickerDialogWithSeconds extends AlertDialog implements DialogInterface.OnClickListener {
 
     public interface OnTimeSetListener {
         void onTimeSet(TimePicker view, int hourOfDay, int minute, int seconds);
@@ -26,8 +22,7 @@ public class TimePickerDialogWithSeconds extends AlertDialog implements DialogIn
 
     private final TimePicker mTimePicker;
     private final OnTimeSetListener mCallback;
-    private final Calendar mCalendar;
-    private final java.text.DateFormat mDateFormat;
+    private boolean visible = false;
 
     int mInitialHourOfDay;
     int mInitialMinute;
@@ -46,11 +41,7 @@ public class TimePickerDialogWithSeconds extends AlertDialog implements DialogIn
         mInitialMinute = minute;
         mInitialSeconds = seconds;
 
-        mDateFormat = DateFormat.getTimeFormat(context);
-        mCalendar = Calendar.getInstance();
-        updateTitle(mInitialHourOfDay, mInitialMinute, mInitialSeconds);
-
-        setButton(DialogInterface.BUTTON_POSITIVE ,context.getText(R.string.time_set), this);
+        setButton(DialogInterface.BUTTON_POSITIVE, context.getText(R.string.time_set), this);
         setButton(DialogInterface.BUTTON_NEGATIVE, context.getText(R.string.cancel), (OnClickListener) null);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -58,10 +49,19 @@ public class TimePickerDialogWithSeconds extends AlertDialog implements DialogIn
         setView(view);
         mTimePicker = (TimePicker) view.findViewById(R.id.timePicker);
 
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (!visible) {
+                    dismiss();
+                }
+            }
+        });
+
         mTimePicker.setCurrentHour(mInitialHourOfDay);
         mTimePicker.setCurrentMinute(mInitialMinute);
         mTimePicker.setCurrentSecond(mInitialSeconds);
-        mTimePicker.setOnTimeChangedListener(this);
+        setTitle(context.getText(R.string.time_picker_widget_title));
     }
 
     public void onClick(DialogInterface dialog, int which) {
@@ -69,23 +69,6 @@ public class TimePickerDialogWithSeconds extends AlertDialog implements DialogIn
             mTimePicker.clearFocus();
             mCallback.onTimeSet(mTimePicker, mTimePicker.getCurrentHour(), mTimePicker.getCurrentMinute(), mTimePicker.getCurrentSeconds());
         }
-    }
-
-    public void onTimeChanged(TimePicker view, int hourOfDay, int minute, int seconds) {
-        updateTitle(hourOfDay, minute, seconds);
-    }
-
-    public void updateTime(int hourOfDay, int minutOfHour, int seconds) {
-        mTimePicker.setCurrentHour(hourOfDay);
-        mTimePicker.setCurrentMinute(minutOfHour);
-        mTimePicker.setCurrentSecond(seconds);
-    }
-
-    private void updateTitle(int hour, int minute, int seconds) {
-        mCalendar.set(Calendar.HOUR_OF_DAY, hour);
-        mCalendar.set(Calendar.MINUTE, minute);
-        mCalendar.set(Calendar.SECOND, seconds);
-        setTitle(mDateFormat.format(mCalendar.getTime()) + ":" + String.format("%02d" , seconds));
     }
 
     @Override
@@ -106,8 +89,6 @@ public class TimePickerDialogWithSeconds extends AlertDialog implements DialogIn
         mTimePicker.setCurrentHour(hour);
         mTimePicker.setCurrentMinute(minute);
         mTimePicker.setCurrentSecond(seconds);
-        mTimePicker.setOnTimeChangedListener(this);
-        updateTitle(hour, minute, seconds);
     }
 
 }
