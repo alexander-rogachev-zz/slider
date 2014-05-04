@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -19,9 +21,13 @@ import java.io.FilenameFilter;
 import ru.rogachev.slider.utils.Constants;
 
 
-public class SlideShowActivity extends Activity {
+public class SlideShowActivity extends Activity implements Animation.AnimationListener {
 
     private ImageView ivSlide;
+    private Animation animFadeIn;
+    private Animation animFadeOut;
+    private Animation animTransLeft;
+    private Animation animTransRight;
 
     RefreshHandler refreshHandler = new RefreshHandler();
 
@@ -80,6 +86,39 @@ public class SlideShowActivity extends Activity {
             });
             updateUI();
         }
+
+        animFadeIn = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
+        animFadeIn.setAnimationListener(this);
+        animFadeOut = AnimationUtils.loadAnimation(this, R.anim.anim_fade_out);
+        animFadeOut.setAnimationListener(this);
+        animTransLeft = AnimationUtils.loadAnimation(this, R.anim.anim_trans_left);
+        animTransLeft.setAnimationListener(this);
+        animTransRight = AnimationUtils.loadAnimation(this, R.anim.anim_trans_right);
+        animTransRight.setAnimationListener(this);
+        ivSlide.startAnimation(animFadeIn);
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+        if (animation == animFadeIn) {
+            ivSlide.startAnimation(animFadeOut);
+        } else if (animation == animFadeOut){
+            ivSlide.startAnimation(animTransRight);
+        } else if (animation == animTransRight) {
+            ivSlide.startAnimation(animTransLeft);
+        } else if (animation == animTransLeft) {
+            ivSlide.startAnimation(animFadeIn);
+        }
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
     }
 
     private final BroadcastReceiver closeSliderReceiver = new BroadcastReceiver() {
